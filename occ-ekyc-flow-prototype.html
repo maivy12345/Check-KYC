@@ -1832,6 +1832,7 @@ function markVerified(s, docType, how){
     crmNotify(`All stakeholders have passed KYC.`,
       `All ${S.stakeholders.length} stakeholders on Order ${S.order.number} have completed identity verification. `
       + `The order is cleared to move to Service Processing. Click to view information.`);
+    S.ui.crmBell = true;
   }
 }
 
