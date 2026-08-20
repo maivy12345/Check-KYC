@@ -641,7 +641,7 @@ const SEED = () => ({
     {id:'SH-14739', name:'JAIMIN M. PATEL',            role:'UBO', dob:'22/11/1978', doc:'K3350118', status:'not_sent', sentAt:null, expiresAt:null, verifiedAt:null, docType:null}
   ],
   mails:[], queue:[], buffer:[], log:[], notis:[], crmNotis:[],
-  ui:{ tab:'crm', mail:null, session:null, crmBell:false, webView:'dashboard', bell:false, flash:false, appView:'noti', appTab:'overview', scenario:'auto', ocr:'ok', apiFails:false, seq:1 }
+  ui:{ tab:'crm', mail:null, session:null, crmBell:false, webView:'order', bell:false, flash:false, appView:'noti', appTab:'overview', scenario:'auto', ocr:'ok', apiFails:false, seq:1 }
 });
 let S = SEED();
 
@@ -1338,33 +1338,7 @@ function renderWeb(){
       </div>
     </div>`;
 
-  if(S.ui.webView === 'dashboard'){
-    v.innerHTML = `
-      <div class="view-hd"><div><h2>Client portal · Web</h2>
-        <p>The same Check KYC action pushes a notification here. Open the bell to see it, then click through to the Order.</p></div></div>
-      ${chrome(`
-        <h1 class="pw-h1">Dashboard</h1>
-        <div class="pw-stats">
-          <div><span>Active Companies</span><b>3</b></div>
-          <div><span>Registered Companies</span><b>1</b></div>
-          <div><span>Inactive Companies</span><b>0</b></div>
-        </div>
-        ${unread?`<div class="pw-alert" data-noti="${noti.id}">
-          <span class="pw-noti-ic">🛡</span>
-          <span><b>Identity verification required</b>
-          <span class="pw-noti-b">Order ${S.order.number} — ${noti.items.length} stakeholder(s) need to complete KYC.
-            Links expire ${fmtClock(noti.expiresAt)}.</span></span>
-          <span class="pw-alert-go">Open Order →</span></div>`:''}
-        <div class="pw-cards">
-          <div class="pw-card"><h4>Upload Documents (2)</h4>
-            <div class="pw-mini"><b>Daisy Holding — Company Formation</b><span>Daisy Holding</span></div>
-            <div class="pw-mini"><b>Daisy Holding — Company Formation</b><span>Daisy Holding</span></div></div>
-          <div class="pw-card"><h4>Upcoming Task (4)</h4>
-            <div class="pw-mini"><b>Renewal · ABC Company</b><span>Due: July 16, 2026</span></div>
-            <div class="pw-mini"><b>Accounting &amp; Auditing · ABC Company</b><span>Due: July 18, 2026</span></div></div>
-        </div>`)}`;
-  }
-  else {
+  {
     const rows = kycRowsPortal(S.stakeholders.map(s=>s.id));
     const left = rows.filter(r=>r.st!=='verified').length;
     const svc = [
@@ -1457,7 +1431,7 @@ function renderWeb(){
   bindPortal();
   flashStakeholder();
   document.querySelectorAll('[data-nav]').forEach(b=> b.onclick = ()=>{
-    S.ui.webView = b.dataset.nav==='Orders' ? 'order' : 'dashboard'; S.ui.bell=false; render();
+    S.ui.webView = 'order'; S.ui.bell=false; render();
   });
   document.querySelectorAll('[data-noti]').forEach(b=> b.onclick = ()=>{
     const n = S.notis.find(x=>x.id===b.dataset.noti); if(n) n.read = true;
