@@ -641,7 +641,7 @@ const SEED = () => ({
     {id:'SH-14739', name:'JAIMIN M. PATEL',            role:'UBO', dob:'22/11/1978', doc:'K3350118', status:'not_sent', sentAt:null, expiresAt:null, verifiedAt:null, docType:null}
   ],
   mails:[], queue:[], buffer:[], log:[], notis:[], crmNotis:[],
-  ui:{ tab:'crm', mail:null, session:null, crmBell:false, webView:'order', bell:false, flash:false, appView:'noti', appTab:'overview', scenario:'auto', ocr:'ok', apiFails:false, seq:1 }
+  ui:{ tab:'crm', mail:null, session:null, crmBell:false, webView:'order', bell:false, flash:false, appView:'noti', appTab:'overview', scenario:'auto', ocr:'ok', apiFails:false, hasApp:false, seq:1 }
 });
 let S = SEED();
 
@@ -1028,10 +1028,11 @@ function renderKycModal(){
 
     bindCopy();
   document.querySelectorAll('[data-go]').forEach(b=> b.onclick = ()=>{
-    if(b.dataset.go==='web'){ S.ui.tab='web'; S.ui.webView='order'; S.ui.bell=false; }
+    const target = b.dataset.go==='auto' ? (S.ui.hasApp?'app':'web') : b.dataset.go;
+    if(target==='web'){ S.ui.tab='web'; S.ui.webView='order'; S.ui.bell=false; }
     else { S.ui.tab='app'; S.ui.appView='order'; S.ui.appTab='overview'; }
     S.ui.flash = true;
-    log('portal', `Contact jumped from the email to the ${b.dataset.go==='web'?'web portal':'mobile app'}`);
+    log('portal', `Contact jumped from the email to the ${target==='web'?'web portal (no app installed)':'mobile app'}`);
     render();
   });
     $('#m-back').onclick = ()=>{ kycStep = 1; renderKycModal(); };
@@ -1149,8 +1150,7 @@ function emailCardHtml(cfg){
           already completed KYC, pick up where someone left off, or issue a fresh link if one expires. Status updates
           instantly across email, web and app — you never have to ask us where things stand.</p>
         <span class="et-btns">
-          <button class="et-b" ${cfg.interactive?'data-go="web"':''}>Open Client Portal →</button>
-          <button class="et-b ghost" ${cfg.interactive?'data-go="app"':''}>Open in the One IBC app →</button>
+          <button class="et-b" ${cfg.interactive?'data-go="auto"':''}>${S.ui.hasApp?'Open in the One IBC app →':'Open Client Portal →'}</button>
         </span>
       </div>
       <p class="email-note">You are receiving this because you are the ${esc(S.order.contact.role)}
@@ -1248,13 +1248,17 @@ function renderMail(){
   v.innerHTML = `
   <div class="view-hd"><div><h2>${esc(S.order.contact.name)}'s inbox</h2>
     <p>The Contact is not a stakeholder — she is the ${esc(S.order.contact.role)} who holds every link and
-       forwards them on. That is why the email carries names and roles only, no identifying data.</p></div></div>
+       forwards them on. That is why the email carries names and roles only, no identifying data.</p></div>
+    <label style="display:inline-flex;align-items:center;gap:8px;font-size:13px;color:#5E6670;cursor:pointer;user-select:none">
+      <input type="checkbox" id="app-installed-toggle" ${S.ui.hasApp?'checked':''}>
+      One IBC app installed on device</label></div>
   <div class="mail-wrap">
     <div class="mlist"><div class="mh">Inbox · ${esc(S.order.contact.email)}</div>${list}</div>
     <div class="mread">${emailPane}</div>
   </div>`;
 
-
+  const tg = $('#app-installed-toggle');
+  if(tg) tg.onchange = ()=>{ S.ui.hasApp = tg.checked; render(); };
   document.querySelectorAll('.mitem').forEach(b=> b.onclick = ()=>{ S.ui.mail=b.dataset.id; render(); });
   bindCopy();
   document.querySelectorAll('[data-open]').forEach(b=> b.onclick = ()=>{
