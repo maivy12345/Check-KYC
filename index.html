@@ -1248,17 +1248,13 @@ function renderMail(){
   v.innerHTML = `
   <div class="view-hd"><div><h2>${esc(S.order.contact.name)}'s inbox</h2>
     <p>The Contact is not a stakeholder — she is the ${esc(S.order.contact.role)} who holds every link and
-       forwards them on. That is why the email carries names and roles only, no identifying data.</p></div>
-    <label style="display:inline-flex;align-items:center;gap:8px;font-size:13px;color:#5E6670;cursor:pointer;user-select:none">
-      <input type="checkbox" id="app-installed-toggle" ${S.ui.hasApp?'checked':''}>
-      One IBC app installed on device</label></div>
+       forwards them on. That is why the email carries names and roles only, no identifying data.</p></div></div>
   <div class="mail-wrap">
     <div class="mlist"><div class="mh">Inbox · ${esc(S.order.contact.email)}</div>${list}</div>
     <div class="mread">${emailPane}</div>
   </div>`;
 
-  const tg = $('#app-installed-toggle');
-  if(tg) tg.onchange = ()=>{ S.ui.hasApp = tg.checked; render(); };
+
   document.querySelectorAll('.mitem').forEach(b=> b.onclick = ()=>{ S.ui.mail=b.dataset.id; render(); });
   bindCopy();
   document.querySelectorAll('[data-open]').forEach(b=> b.onclick = ()=>{
