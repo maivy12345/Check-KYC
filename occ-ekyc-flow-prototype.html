@@ -1527,13 +1527,6 @@ function renderApp(){
       <p>Third channel from the same Check KYC action. Tapping the push notification lands on the Order screen with the KYC block on top.</p></div></div>
     <div class="veriff-stage">
       <div class="phone"><div class="screen pa">${screen}</div></div>
-      <div class="simpanel">
-        <div class="simcard"><h4>Three channels, one action</h4>
-          <p>Check KYC in the CRM fires an email to the Order Contact plus an in-product notification on web and app.
-             Whoever gets there first can start; status is shared, so the other channels update too.</p></div>
-        <div class="simcard"><h4>Notification state</h4>
-          <p>${unread?`${unread} unread. Tap it to open the Order.`:'Read. The badge on the tab clears once opened.'}</p></div>
-      </div>
     </div>`;
 
   bindPortal();
